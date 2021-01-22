@@ -1,3 +1,0 @@
-# Pex 1 Scene with multiple triangles
-# Update the location below to where you save the obj on your computer
-m MultipleTrianglesSwappedVertex.scene.ply
