@@ -1,5 +1,5 @@
-.vs
-Testcases
-x64
+.vs/
+Testcases/
+x64/
 .DS_Store
-output.bmp
+output
