@@ -3,6 +3,7 @@
 #define DRAW_H
 
 #include <windows.h>
+#include <algorithm>
 #include "scene.h"
 #include "definitions.h"
 #include "mat4.h"
@@ -11,7 +12,7 @@
 // 2D Array Struct definition to hold float values.
 #ifndef BUF2D
 #define BUF2D
-struct buf2d {
+struct buf2d { // note:  look at z value to determine color
 
 	int sizex;  // number of columns
 	int sizey;  // number of rows
