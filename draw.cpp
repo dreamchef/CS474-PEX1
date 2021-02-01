@@ -16,19 +16,22 @@ void draw(
 	HDC &img,
 	Scene scene)
 {
-	std::vector<int> currentFace;
+	/*bool compare (int a, int b) {
+		return scene.model.vertex.at(face.at(a)).y > scene.model.vertex.at(face.at(b)).y;
+	}*/
 
+	std::vector<int> face;
+	
 	// For each face...
 	for (int i = 0; i < scene.model.face.size(); i++) {
 
-		SetPixelV(img, 5, 5, RGB(0, 255, 0));
-
 		// ... sort indices of vertices
-		currentFace = scene.model.face.at(i);
-		std::sort(currentFace.begin(), currentFace.end()); // How do I check whether this is the correct order?
-		vec4f high = scene.model.vertex.at(currentFace.at(0));
-		vec4f low = scene.model.vertex.at(currentFace.at(2));
-		vec4f mid = scene.model.vertex.at(currentFace.at(1));
+		face = scene.model.face.at(i);
+
+		std::sort(face.begin(), face.end(), compare); // How do I check whether this is the correct order?
+		vec4f high = scene.model.vertex.at(face.at(0));
+		vec4f low = scene.model.vertex.at(face.at(2));
+		vec4f mid = scene.model.vertex.at(face.at(1));
 
 		high.y = 800 - high.y;
 		mid.y  = 800 - mid.y;
@@ -70,19 +73,4 @@ void draw(
 	}
 
 	//TODO: depth buffer, colors
-
-	// Draw 4 squares in the image
-
-	//			else
-	//				// Bottom left is Green
-	//				SetPixelV(img, x, y, RGB(0, 255, 0));
-	//		else
-	//			if (y < height / 2)
-	//				// Top Right is Blue
-	//				SetPixelV(img, x, y, RGB(0, 0, 255));
-	//			else
-	//				// Bottom right is White
-	//				SetPixelV(img, x, y, RGB(255, 255, 255));
-	//	}
-	//}
 }
