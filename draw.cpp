@@ -34,7 +34,7 @@ void draw(
 		mid.y  = 800 - mid.y;
 		low.y  = 800 - low.y;
 
-		float dy = 1;
+		float dx;
 
 		// Calculate delta for longest side
 		float DeltaX0 = (high.x - low.x) / (high.y - low.y);
@@ -49,8 +49,8 @@ void draw(
 
 		// For upper half...
 		while (y <= mid.y) {
-			// ...fill each scanline.
-
+			for(int x = min(x0,x1); x < max(x0,x1); x++)
+				SetPixelV(img, floor(x), floor(y), RGB(0, 255, 0));
 			x0 += DeltaX0;
 			x1 += DeltaX1;
 			y++;
@@ -61,13 +61,15 @@ void draw(
 
 		// For lower half...
 		while (y <= low.y) {
-			// ...fill each scanline.
+			for (int x = min(x0, x1); x < max(x0, x1); x++)
+				SetPixelV(img, floor(x), floor(y), RGB(0, 255, 0));
 			x0 += DeltaX0;
 			x1 += DeltaX1;
 			y++;
 		}
-
 	}
+
+	//TODO: depth buffer, colors
 
 	// Draw 4 squares in the image
 
