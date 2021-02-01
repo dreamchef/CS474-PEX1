@@ -8,7 +8,6 @@
 #include "definitions.h"
 #include "mat4.h"
 
-
 // 2D Array Struct definition to hold float values.
 #ifndef BUF2D
 #define BUF2D
