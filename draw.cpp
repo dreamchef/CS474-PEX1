@@ -17,9 +17,18 @@ void draw(
 {
 	std::vector<vec4f> face;
 	face.resize(3);
-	
-	// For each face...
+
+	// Copy faces into mutable vector
+
+	// Sort faces by depth
+
+	// Draw face
 	for (int i = 0; i < scene.model.face.size(); i++) {
+
+		// Read color
+		float r = scene.model.faceColor.at((scene.model.face.at(i).at(0))).x*255;
+		float g = scene.model.faceColor.at((scene.model.face.at(i).at(0))).y*255;
+		float b = scene.model.faceColor.at((scene.model.face.at(i).at(0))).z*255;
 
 		// ... sort indices of vertices
 		face.at(0) = scene.model.vertex.at(scene.model.face.at(i).at(0));
@@ -42,27 +51,29 @@ void draw(
 		// Calculate second delta for upper half
 		float DeltaX1 = (face.at(0).x - face.at(1).x) / (face.at(0).y - face.at(1).y);
 
-		// Starting scanline position
+		// HANDLE HORIZONTAL EDGE CASE
+
+		// Set starting scanline position
 		float x0 = face.at(0).x;
 		float x1 = face.at(0).x;
 		float y = face.at(0).y;
 
-		// For upper half...
+		// Draw upper triangle
 		while (y <= face.at(1).y) {
 			for(int x = min(x0,x1); x < max(x0,x1); x++)
-				SetPixelV(img, floor(x), floor(y), RGB(0, 255, 0));
+				SetPixelV(img, floor(x), floor(y), RGB(r, g, b));
 			x0 += DeltaX0;
 			x1 += DeltaX1;
 			y++;
 		}
 
-		// Update second delta for face.at(2)er half
+		// Update second delta for lower half
 		DeltaX1 = (face.at(1).x - face.at(2).x) / (face.at(1).y - face.at(2).y);
 
-		// For face.at(2)er half...
+		// Draw lower triangle
 		while (y <= face.at(2).y) {
 			for (int x = min(x0, x1); x < max(x0, x1); x++)
-				SetPixelV(img, floor(x), floor(y), RGB(0, 255, 0));
+				SetPixelV(img, floor(x), floor(y), RGB(r, g, b));
 			x0 += DeltaX0;
 			x1 += DeltaX1;
 			y++;
