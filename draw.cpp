@@ -1,4 +1,5 @@
 #include "draw.h"
+#include <iostream>
 
 
 /////////////////
@@ -15,53 +16,61 @@ void draw(
 	HDC &img,
 	Scene scene)
 {
-
 	std::vector<int> currentFace;
 
 	// For each face...
-	for(int i = 0; i < scene.model.face.size(); i++) {
-		
-		// ... sort indices of vertices.
+	for (int i = 0; i < scene.model.face.size(); i++) {
+
+		SetPixelV(img, 5, 5, RGB(0, 255, 0));
+
+		// ... sort indices of vertices
 		currentFace = scene.model.face.at(i);
-		std::sort(currentFace.begin(), currentFace.end());
+		std::sort(currentFace.begin(), currentFace.end()); // How do I check whether this is the correct order?
+		vec4f high = scene.model.vertex.at(currentFace.at(0));
+		vec4f low = scene.model.vertex.at(currentFace.at(2));
+		vec4f mid = scene.model.vertex.at(currentFace.at(1));
 
-		// Test for special cases
+		high.y = 800 - high.y;
+		mid.y  = 800 - mid.y;
+		low.y  = 800 - low.y;
 
-		// calculate line between highest and lowest vertices
-		// save as appropriate side
+		float dy = 1;
 
-		// Calculate line between upper two vertices.
-		// save as appropriate side
+		// Calculate delta for longest side
+		float DeltaX0 = (high.x - low.x) / (high.y - low.y);
 
-		// LOOP: Draw horizontal lines pairwise down to middle vertex...
+		// Calculate second delta for upper half
+		float DeltaX1 = (high.x - mid.x) / (high.y - mid.y);
 
-			// ... using lines to calculate start/end.
+		// Starting scanline position
+		float x0 = high.x;
+		float x1 = high.x;
+		float y = high.y;
 
-		// Calculate line between lower two vertices.
-		// update appropriate side
+		// For upper half...
+		while (y <= mid.y) {
+			// ...fill each scanline.
 
-		// LOOP: Draw horizontal lines pairwise down to lowest vertex...
-
-			// ... using lines to calculate start/end.
+			x0 += DeltaX0;
+			x1 += DeltaX1;
+			y++;
 		}
 
+		// Update second delta for lower half
+		DeltaX1 = (mid.x - low.x) / (mid.y - low.y);
 
+		// For lower half...
+		while (y <= low.y) {
+			// ...fill each scanline.
+			x0 += DeltaX0;
+			x1 += DeltaX1;
+			y++;
+		}
 
-
-
-
-
-
+	}
 
 	// Draw 4 squares in the image
-	//for (int y = 0; y < height; y++)
-	//{
-	//	for (int x = 0; x < width; x++)
-	//	{
-	//		if (x < width / 2)
-	//			if (y < height / 2)
-	//				// Top left is Red
-	//				SetPixelV(img, x, y, RGB(255, 0, 0));
+
 	//			else
 	//				// Bottom left is Green
 	//				SetPixelV(img, x, y, RGB(0, 255, 0));
