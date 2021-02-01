@@ -1,7 +1,6 @@
 #include "draw.h"
 #include <iostream>
 
-
 /////////////////
 // Function   : draw()
 // Parameters : int width		number of columns
@@ -16,22 +15,25 @@ void draw(
 	HDC &img,
 	Scene scene)
 {
-	/*bool compare (int a, int b) {
-		return scene.model.vertex.at(face.at(a)).y > scene.model.vertex.at(face.at(b)).y;
-	}*/
-
-	std::vector<int> face;
+	std::vector<vec4f> face;
 	
 	// For each face...
 	for (int i = 0; i < scene.model.face.size(); i++) {
 
 		// ... sort indices of vertices
-		face = scene.model.face.at(i);
+		face.at(0) = scene.model.vertex.at(scene.model.face.at(i).at(0));
+		face.at(0) = scene.model.vertex.at(scene.model.face.at(i).at(0));
+		face.at(0) = scene.model.vertex.at(scene.model.face.at(i).at(0));
 
-		std::sort(face.begin(), face.end(), compare); // How do I check whether this is the correct order?
-		vec4f high = scene.model.vertex.at(face.at(0));
-		vec4f low = scene.model.vertex.at(face.at(2));
-		vec4f mid = scene.model.vertex.at(face.at(1));
+		auto compareVertices = [](vec4f a, vec4f b) {
+			return (a.y > b.y);
+		};
+
+		std::sort(face.begin(), face.end(), compareVertices); // Check correct order
+		
+		vec4f high = face.at(0);
+		vec4f low = face.at(1);
+		vec4f mid = face.at(2);
 
 		high.y = 800 - high.y;
 		mid.y  = 800 - mid.y;
