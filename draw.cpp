@@ -15,11 +15,16 @@ void draw(
 	HDC &img,
 	Scene scene)
 {
+
 	std::vector<vec4f> face;
 	face.resize(3);
 	float r, g, b;
-	float x0, x1, y;
-	float DeltaX0, DeltaX1;
+	float x0, x1, y, z, bufWatcher;
+	float DeltaX0, DeltaX1;  
+
+	buf2d depthBuffer;
+
+	depthBuffer.init(width, height, -1000);
 
 	// Copy faces into mutable vector
 	// Sort faces by depth
@@ -50,19 +55,26 @@ void draw(
 
 		// Set starting scanline position
 		x0 = face.at(0).x;
-		x1 = face.at(0).x;
+		x1 = face.at(0).x; 
 		y = face.at(0).y;
+		z = face.at(0).z;
 
 		// Set delta for longest side
 		DeltaX0 = (face.at(0).x - face.at(2).x) / (face.at(0).y - face.at(2).y);
 
-		if (face.at(0).y != face.at(1).y) { // Check for horizontal edge
-			// Set second delta for upper half
-			DeltaX1 = (face.at(0).x - face.at(1).x) / (face.at(0).y - face.at(1).y);
+		// Set second delta for upper half
+		DeltaX1 = (face.at(0).x - face.at(1).x) / (face.at(0).y - face.at(1).y);
+
+		if (DeltaX1 + x1 > 0 && DeltaX1 + x1 < width && DeltaX0 + x0 > 0 && DeltaX0 + x0 < width) { // Check for horizontal edge
 			// Draw upper triangle
 			while (y < face.at(1).y) {
-				for (int x = min(x0, x1); x < max(x0, x1); x++)
-					SetPixelV(img, floor(x), floor(y), RGB(r, g, b));
+				for (int x = min(x0, x1); x < max(x0, x1); x++) {
+					if (z >= depthBuffer[x][(int)y]) {
+						SetPixelV(img, x, (int)y, RGB(r, g, b));
+						bufWatcher = depthBuffer[x][(int)y];
+						depthBuffer[x][(int)y] = z;
+					}
+				}
 				x0 += DeltaX0;
 				x1 += DeltaX1;
 				y++;
@@ -71,20 +83,25 @@ void draw(
 		else {
 			x1 = face.at(1).x;
 		}
+
+		// Set second delta for lower half
+		DeltaX1 = (face.at(1).x - face.at(2).x) / (face.at(1).y - face.at(2).y);
 		
-		if (face.at(1).y != face.at(2).y) { // Check for horizontal edge
-			// Set second delta for lower half
-			DeltaX1 = (face.at(1).x - face.at(2).x) / (face.at(1).y - face.at(2).y);
+		if (DeltaX1+x1 > 0 && DeltaX1+x1 < width && DeltaX0+x0 > 0 && DeltaX0+x0 < width) { // Check for horizontal edge	
+			
 			// Draw lower triangle
 			while (y < face.at(2).y) {
-				for (int x = min(x0, x1); x < max(x0, x1); x++)
-					SetPixelV(img, floor(x), floor(y), RGB(r, g, b));
+				for (int x = min(x0, x1); x < max(x0, x1); x++) {
+					if (z >= depthBuffer[x][(int)y]) {
+						SetPixelV(img, x, (int)y, RGB(r, g, b));
+						bufWatcher = depthBuffer[x][(int)y];
+						depthBuffer[x][(int)y] = z;
+					}
+				}
 				x0 += DeltaX0;
 				x1 += DeltaX1;
 				y++;
 			}
 		}
-		
-		
 	}
 }
